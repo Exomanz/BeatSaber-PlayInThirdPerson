@@ -3,10 +3,9 @@
 View your swings better as you play.
 
 ## Requirements
-- Beat Saber version 1.13.2
-- BSUtils 1.4.1+
-- Harmony
-- BSML
+- BSIPA v4.1.6+
+- SiraUtil v2.5.5+
+- BeatSaberMarkupLanguage v1.5.3+
 
 ## Config Settings
 |Variable Name|Description|
