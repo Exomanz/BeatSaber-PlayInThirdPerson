@@ -1,17 +1,18 @@
 ﻿using HarmonyLib;
+using IPA.Utilities;
 using UnityEngine;
 
 namespace PlayInThirdPerson.Harmony_Patches
 {
 	[HarmonyPatch(typeof(PlayerTransforms), "Update")]
-	class PlayerTransformsUpdate
+	internal class PlayerTransformsUpdate
 	{
 		static void Postfix(PlayerTransforms __instance)
 		{
-			if (Plugin.IsEnabled)
+			if (Plugin.Config.Enabled)
 			{
-				Vector3 headPos = __instance.headPseudoLocalPos - ConfigHelper.Config.Offset;
-				ReflectionHelper.SetField(__instance, "_headPseudoLocalPos", headPos);
+				Vector3 headPos = __instance.headPseudoLocalPos - Plugin.Config.Offset;
+				ReflectionUtil.SetField(__instance, "_headPseudoLocalPos", headPos);
 			}
 		}
 	}

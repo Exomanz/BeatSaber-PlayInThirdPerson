@@ -1,91 +1,40 @@
 ﻿using BeatSaberMarkupLanguage.Settings;
 using HarmonyLib;
 using IPA;
+using IPA.Config.Stores;
+using IPAConfig = IPA.Config.Config;
+using IPALogger = IPA.Logging.Logger;
 using PlayInThirdPerson.UI;
-using ScoreSaber;
-using System;
-using System.Linq;
+using SiraUtil.Zenject;
 using System.Reflection;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace PlayInThirdPerson
 {
-	[Plugin(RuntimeOptions.SingleStartInit)]
+	[Plugin(RuntimeOptions.DynamicInit)]
 	public class Plugin
 	{
-		public static bool IsEnabled => ConfigHelper.Config.Enabled && !IsPlayingReplay;
+		internal static Config Config { get; private set; }
+		internal static IPALogger Logger { get; private set; }
+		internal static Harmony HarmonyID { get; private set; } = null;
 
-		private static bool IsPlayingReplay;
+		[Init] public Plugin(IPALogger iLogger, IPAConfig iConfig, Zenjector zenjector)
+        {
+			Logger = iLogger;
+			Config = iConfig.Generated<Config>();
+			if (!ScoreSaberUtil.IsInReplay()) zenjector.OnGame<Installers.CameraMoverInstaller>();
+        }
 
-		private void SetupCamera()
-		{
-			Transform mainCamera = Camera.main.transform;
-			Transform cameraMover = new GameObject("Camera Mover").transform;
-			cameraMover.SetParent(mainCamera.parent, false);
-			cameraMover.gameObject.AddComponent<CameraMover>();
-			mainCamera.SetParent(cameraMover, true);
-		}
+		[OnEnable] public void Enable()
+        {
+			BSMLSettings.instance.AddSettingsMenu("Third Person", "PlayInThirdPerson.UI.SettingsUI.bsml", SettingsUI.instance);
+			if (HarmonyID is null) HarmonyID = new Harmony("bs.Exomanz.ThirdPerson");
+			HarmonyID.PatchAll(Assembly.GetExecutingAssembly());
+        }
 
-		private void MenuSceneLoaded()
-		{
-			IsPlayingReplay = false;
-		}
-
-		private void LateMenuSceneLoadedFresh(ScenesTransitionSetupDataSO obj)
-		{
-			SetupCamera();
-		}
-
-		private void GameSceneLoaded()
-		{
-
-			ReplayPlayer replayPlayer = GameObject.FindObjectOfType<ReplayPlayer>();
-			IsPlayingReplay = (replayPlayer != null) ? replayPlayer.playbackEnabled : false;
-
-			if (IsEnabled)
-			{
-				SetupCamera();
-			}
-		}
-
-		[OnStart]
-		public void OnApplicationStart()
-		{
-			try
-			{
-				Harmony harmony = new Harmony("com.Nicky.BeatSaber.PlayInThirdPerson");
-				harmony.PatchAll(Assembly.GetExecutingAssembly());
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine("[PlayInThirdPerson] This plugin requires Harmony.");
-				Console.WriteLine(e);
-			}
-
-			BS_Utils.Utilities.BSEvents.OnLoad();
-			BS_Utils.Utilities.BSEvents.lateMenuSceneLoadedFresh += LateMenuSceneLoadedFresh;
-			BS_Utils.Utilities.BSEvents.menuSceneLoaded += MenuSceneLoaded;
-			BS_Utils.Utilities.BSEvents.gameSceneLoaded += GameSceneLoaded;
-			SceneManager.activeSceneChanged += OnActiveSceneChanged;
-			ConfigHelper.LoadConfig();
-		}
-
-		[OnExit]
-		public void OnApplicationQuit()
-		{
-			BS_Utils.Utilities.BSEvents.gameSceneLoaded -= GameSceneLoaded;
-			BS_Utils.Utilities.BSEvents.menuSceneLoaded -= MenuSceneLoaded;
-			BS_Utils.Utilities.BSEvents.lateMenuSceneLoadedFresh -= LateMenuSceneLoadedFresh;
-		}
-
-		public void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
-		{
-			if (nextScene.name == "MenuViewControllers" && prevScene.name == "EmptyTransition")
-			{
-				BSMLSettings.instance.AddSettingsMenu("Third Person", "PlayInThirdPerson.UI.SettingsUI.bsml", SettingsUI.instance);
-			}
-		}
+		[OnDisable] public void Disable()
+        {
+			HarmonyID.UnpatchAll(HarmonyID.Id);
+			HarmonyID = null;
+        }
 	}
 }
