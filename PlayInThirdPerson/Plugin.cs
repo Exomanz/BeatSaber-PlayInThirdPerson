@@ -4,6 +4,7 @@ using IPA;
 using IPA.Config.Stores;
 using IPAConfig = IPA.Config.Config;
 using IPALogger = IPA.Logging.Logger;
+using PlayInThirdPerson.Installers;
 using PlayInThirdPerson.UI;
 using SiraUtil.Zenject;
 using System.Reflection;
@@ -21,7 +22,7 @@ namespace PlayInThirdPerson
         {
 			Logger = iLogger;
 			Config = iConfig.Generated<Config>();
-			if (!ScoreSaberUtil.IsInReplay()) zenjector.OnGame<Installers.CameraMoverInstaller>();
+			zenjector.OnGame<CameraMoverInstaller>();
         }
 
 		[OnEnable] public void Enable()
@@ -33,6 +34,7 @@ namespace PlayInThirdPerson
 
 		[OnDisable] public void Disable()
         {
+			BSMLSettings.instance.RemoveSettingsMenu(SettingsUI.instance);
 			HarmonyID.UnpatchAll(HarmonyID.Id);
 			HarmonyID = null;
         }

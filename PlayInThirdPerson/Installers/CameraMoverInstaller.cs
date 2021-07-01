@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using PlayInThirdPerson.Utilities;
+using UnityEngine;
+using UnityEngine.XR;
 using Zenject;
 
 namespace PlayInThirdPerson.Installers
@@ -7,6 +9,9 @@ namespace PlayInThirdPerson.Installers
     {
         public override void InstallBindings()
         {
+            ScoreSaberUtil.UpdateIsInReplay();
+            if (ScoreSaberUtil.IsInReplay() || !XRDevice.isPresent) return;
+
             GameObject cameraMover = new GameObject("CameraMover");
             Container.Bind<CameraMover>().FromNewComponentOn(cameraMover).AsSingle().NonLazy();
         }
