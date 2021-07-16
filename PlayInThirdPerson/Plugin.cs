@@ -22,7 +22,7 @@ namespace PlayInThirdPerson
         {
 			Logger = iLogger;
 			Config = iConfig.Generated<Config>();
-			zenjector.OnGame<CameraMoverInstaller>();
+			zenjector.OnGame<CameraMoverInstaller>().ShortCircuitForMultiplayer().ShortCircuitForTutorial();
         }
 
 		[OnEnable] public void Enable()
