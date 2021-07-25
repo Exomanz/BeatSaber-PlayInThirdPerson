@@ -11,6 +11,7 @@ using System.Reflection;
 
 namespace PlayInThirdPerson
 {
+	// For some reason VS nuked my formatting /shrug/
 	[Plugin(RuntimeOptions.DynamicInit)]
 	public class Plugin
 	{
@@ -18,25 +19,25 @@ namespace PlayInThirdPerson
 		internal static IPALogger Logger { get; private set; }
 		internal static Harmony HarmonyID { get; private set; } = null;
 
-	[Init] public Plugin(IPALogger iLogger, IPAConfig iConfig, Zenjector zenjector)
-        {
-		Logger = iLogger;
-		Config = iConfig.Generated<Config>();
-		zenjector.OnGame<CameraMoverInstaller>().ShortCircuitForMultiplayer().ShortCircuitForTutorial();
-        }
+		[Init] public Plugin(IPALogger iLogger, IPAConfig iConfig, Zenjector zenjector)
+        	{
+			Logger = iLogger;
+			Config = iConfig.Generated<Config>();
+			zenjector.OnGame<CameraMoverInstaller>().ShortCircuitForMultiplayer().ShortCircuitForTutorial();
+        	}
 
-	[OnEnable] public void Enable()
-        {
-		GameplaySetup.instance.AddTab("Third Person", "PlayInThirdPerson.UI.SettingsUI.bsml", SettingsUI.instance);
-		if (HarmonyID is null) HarmonyID = new Harmony("bs.Exomanz.ThirdPerson");
-		HarmonyID.PatchAll(Assembly.GetExecutingAssembly());
-        }
+		[OnEnable] public void Enable()
+        	{
+			GameplaySetup.instance.AddTab("Third Person", "PlayInThirdPerson.UI.SettingsUI.bsml", SettingsUI.instance);
+			if (HarmonyID is null) HarmonyID = new Harmony("bs.Exomanz.ThirdPerson");
+			HarmonyID.PatchAll(Assembly.GetExecutingAssembly());
+        	}
 
-	[OnDisable] public void Disable()
-        {
-		GameplaySetup.instance.RemoveTab("Third Person");
-		HarmonyID.UnpatchAll(HarmonyID.Id);
-		HarmonyID = null;
-        }
-    }
+		[OnDisable] public void Disable()
+        	{
+			GameplaySetup.instance.RemoveTab("Third Person");
+			HarmonyID.UnpatchAll(HarmonyID.Id);
+			HarmonyID = null;
+        	}
+	}
 }
