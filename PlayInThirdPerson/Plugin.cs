@@ -1,4 +1,4 @@
-﻿using BeatSaberMarkupLanguage.Settings;
+﻿using BeatSaberMarkupLanguage.GameplaySetup;
 using HarmonyLib;
 using IPA;
 using IPA.Config.Stores;
@@ -27,14 +27,14 @@ namespace PlayInThirdPerson
 
 		[OnEnable] public void Enable()
         {
-			BSMLSettings.instance.AddSettingsMenu("Third Person", "PlayInThirdPerson.UI.SettingsUI.bsml", SettingsUI.instance);
+			GameplaySetup.instance.AddTab("Third Person", "PlayInThirdPerson.UI.SettingsUI.bsml", SettingsUI.instance);
 			if (HarmonyID is null) HarmonyID = new Harmony("bs.Exomanz.ThirdPerson");
 			HarmonyID.PatchAll(Assembly.GetExecutingAssembly());
         }
 
 		[OnDisable] public void Disable()
         {
-			BSMLSettings.instance.RemoveSettingsMenu(SettingsUI.instance);
+			GameplaySetup.instance.RemoveTab("Third Person");
 			HarmonyID.UnpatchAll(HarmonyID.Id);
 			HarmonyID = null;
         }

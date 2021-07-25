@@ -10,7 +10,7 @@ namespace PlayInThirdPerson.Installers
         public override void InstallBindings()
         {
             ScoreSaberUtil.UpdateIsInReplay();
-            if (ScoreSaberUtil.IsInReplay() || !XRDevice.isPresent) return;
+            if (ScoreSaberUtil.IsInReplay() || !XRDevice.isPresent || !Plugin.Config.Enabled) return;
 
             GameObject cameraMover = new GameObject("CameraMover");
             Container.Bind<CameraMover>().FromNewComponentOn(cameraMover).AsSingle().NonLazy();
