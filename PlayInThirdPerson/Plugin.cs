@@ -11,7 +11,6 @@ using System.Reflection;
 
 namespace PlayInThirdPerson
 {
-	// For some reason VS nuked my formatting /shrug/
 	[Plugin(RuntimeOptions.DynamicInit)]
 	public class Plugin
 	{
