@@ -3,29 +3,29 @@ using UnityEngine;
 
 namespace PlayInThirdPerson.UI
 {
-	internal class SettingsUI : PersistentSingleton<SettingsUI>
-	{
-		Config _config => Plugin.Config;
+    internal class SettingsUI : PersistentSingleton<SettingsUI>
+    {
+        private Config _config => Plugin.Config;
 
-		[UIValue("boolEnable")]
-		protected bool Enabled
+        [UIValue("boolEnable")]
+        protected bool Enabled
         {
-			get => _config.Enabled;
-			set => _config.Enabled = value;
+            get => _config.Enabled;
+            set => _config.Enabled = value;
         }
 
-		[UIValue("cameraOffsetY")]
-		protected float CameraOffsetY
+        [UIValue("cameraOffsetY")]
+        protected float CameraOffsetY
         {
-			get => _config.Offset.y;
-			set => _config.Offset = new Vector3(0f, value, CameraOffsetZ);
+            get => _config.Offset.y;
+            set => _config.Offset = new Vector3(0f, value, CameraOffsetZ);
         }
 
-		[UIValue("cameraOffsetZ")]
-		protected float CameraOffsetZ
+        [UIValue("cameraOffsetZ")]
+        protected float CameraOffsetZ
         {
-			get => _config.Offset.z;
-			set => _config.Offset = new Vector3(0f, CameraOffsetY, value);
+            get => _config.Offset.z;
+            set => _config.Offset = new Vector3(0f, CameraOffsetY, value);
         }
-	}
+    }
 }
