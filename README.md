@@ -3,11 +3,6 @@
 View your swings better as you play.
 
 ## Requirements
-- BSIPA v4.1.6+
-- SiraUtil v2.5.5+
-- BeatSaberMarkupLanguage v1.5.3+
-
-## Config Settings
-|Variable Name|Description|
-|-|-|
-|***Offset***|Camera offset from normal head position|
+- BSIPA v4.2.2+
+- SiraUtil v3.0.5+
+- BeatSaberMarkupLanguage v1.6.2+
