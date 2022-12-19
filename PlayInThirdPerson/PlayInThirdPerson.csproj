@@ -86,9 +86,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Utilities\CameraMover.cs" />
-    <Compile Include="Harmony Patches\PlayerTransformsUpdate.cs" />
-    <Compile Include="Installers\CameraMoverInstaller.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="Patches\PlayerTransformsUpdate.cs" />
+    <Compile Include="PluginConfig.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ScoreSaberUtil.cs" />

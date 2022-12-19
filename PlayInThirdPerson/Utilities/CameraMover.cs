@@ -5,20 +5,15 @@ namespace PlayInThirdPerson.Utilities
 {
     internal class CameraMover : MonoBehaviour
     {
-#pragma warning disable CS0649
-        [Inject] protected MainCamera _mainCamera;
-#pragma warning restore CS0649
+        [Inject] protected readonly MainCamera _mainCamera;
 
-        private void Start()
+        public void Start()
         {
-            Transform mainCam = _mainCamera.transform;
-            Transform offset = transform;
-
-            offset.SetParent(mainCam.parent, false);
-            mainCam.SetParent(transform, true);
+            this.transform.SetParent(_mainCamera.transform.parent, false);
+            _mainCamera.transform.SetParent(this.transform, true);
         }
 
-        private void LateUpdate()
+        public void LateUpdate()
         {
             if (Plugin.Config.Enabled) transform.localPosition = Plugin.Config.Offset;
             else transform.localPosition = Vector3.zero;

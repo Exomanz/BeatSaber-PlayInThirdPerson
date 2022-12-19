@@ -2,46 +2,58 @@
 using HarmonyLib;
 using IPA;
 using IPA.Config.Stores;
-using PlayInThirdPerson.Installers;
 using PlayInThirdPerson.UI;
 using PlayInThirdPerson.Utilities;
 using SiraUtil.Zenject;
+using System;
+using System.Linq;
 using System.Reflection;
+using UnityEngine;
 using IPAConfig = IPA.Config.Config;
 using IPALogger = IPA.Logging.Logger;
 
 namespace PlayInThirdPerson
 {
-    [Plugin(RuntimeOptions.SingleStartInit)]
+    [Plugin(RuntimeOptions.DynamicInit)]
     public class Plugin
     {
-        internal static Config Config { get; private set; }
+        internal static PluginConfig Config { get; private set; }
         internal static IPALogger Logger { get; private set; }
-        internal static Harmony HarmonyID { get; private set; } = null;
+        internal static Harmony harmony { get; } = new Harmony("com.exomanz.beatsaber.thirdperson");
 
         [Init]
-        public Plugin(IPALogger iLogger, IPAConfig iConfig, Zenjector zenjector)
+        public Plugin(IPALogger logger, IPAConfig config, Zenjector zenjector)
         {
-            Logger = iLogger;
-            Config = iConfig.Generated<Config>();
-            zenjector.Install<CameraMoverInstaller>(Location.Player);
+            Logger = logger;
+            Config = config.Generated<PluginConfig>();
+
+            zenjector.Install(Location.Player, Container =>
+            {
+                bool fpfc = Environment.GetCommandLineArgs().Any(arg => arg.ToLower() == "fpfc");
+
+                ScoreSaberUtil.UpdateIsInReplay();
+                if (ScoreSaberUtil.IsInReplay() || fpfc || !Plugin.Config.Enabled)
+                    return;
+
+                GameObject cameraMover = new GameObject("PITP - CameraMover");
+                Container.Bind<CameraMover>().FromNewComponentOn(cameraMover).AsSingle().NonLazy();
+            });
         }
 
-        [OnStart]
-        public void OnStart()
+        [OnEnable]
+        public void Enable()
         {
             ScoreSaberUtil.Define();
-            if (HarmonyID is null) HarmonyID = new Harmony("bs.Exomanz.ThirdPerson");
-            HarmonyID.PatchAll(Assembly.GetExecutingAssembly());
+
             GameplaySetup.instance.AddTab("Third Person", "PlayInThirdPerson.UI.SettingsUI.bsml", SettingsUI.instance);
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
 
-        [OnExit]
-        public void OnExit()
+        [OnDisable]
+        public void Disable()
         {
             GameplaySetup.instance.RemoveTab("Third Person");
-            HarmonyID.UnpatchSelf();
-            HarmonyID = null;
+            harmony.UnpatchSelf();
         }
     }
 }

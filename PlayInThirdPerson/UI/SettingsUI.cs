@@ -5,7 +5,7 @@ namespace PlayInThirdPerson.UI
 {
     internal class SettingsUI : PersistentSingleton<SettingsUI>
     {
-        private Config _config => Plugin.Config;
+        private PluginConfig _config => Plugin.Config;
 
         [UIValue("boolEnable")]
         protected bool Enabled
